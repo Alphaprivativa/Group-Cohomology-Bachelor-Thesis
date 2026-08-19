@@ -13,9 +13,9 @@ _(Co)omologia di gruppi ed il teorema di Schur-Zassenhaus_ - Tesi di Laurea in T
 | **Academic year** | 2023-2024 |
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
-[![Web edition](https://img.shields.io/badge/read-online-blue.svg)](https://alphaprivativa.github.io/group-cohomology-thesis/)
+[![Web edition](https://img.shields.io/badge/read-online-blue.svg)](https://alphaprivativa.github.io/Group-Cohomology-Bachelor-Thesis/)
 
-**[Read the web edition (English)](https://alphaprivativa.github.io/group-cohomology-thesis/)**  ·  **[Download the PDF (Italiano)](Main_Thesis_PDF_IT/main.pdf)**
+**[Read the web edition (English)](https://alphaprivativa.github.io/Group-Cohomology-Bachelor-Thesis/)**  ·  **[Download the PDF (Italiano)](Main_Thesis_PDF_IT/main.pdf)**
 
 ---
 
@@ -97,6 +97,7 @@ own; if the two editions ever disagree, the PDF is authoritative.
 │   ├── <one file per definition, theorem or proof>
 │   ├── site-lib/              Styles, scripts, fonts, search index, graph engine
 │   └── zz-allegati/quiver/    Commutative diagrams as SVG
+├── .github/workflows/static.yml   Deploys the site to GitHub Pages on push
 ├── tools/
 │   └── mark-unresolved-links.py   Post-export tidy up, see below
 ├── LICENSE                    CC BY 4.0
@@ -131,16 +132,19 @@ then open <http://localhost:8000>.
 
 ## Publishing on GitHub Pages
 
-The site is plain static files, so no build step is needed:
+The site is plain static files, so there is no build step. Deployment is handled by
+[`.github/workflows/static.yml`](.github/workflows/static.yml), which uploads the whole
+repository and publishes it on every push to `main`.
 
-1. Push this repository to GitHub.
-2. **Settings → Pages → Build and deployment**, source **Deploy from a branch**, branch `main`,
-   folder `/ (root)`.
-3. The site goes live at `https://<username>.github.io/group-cohomology-thesis/`, and the root
-   `index.html` sends visitors into the web edition.
+One-time setup: **Settings → Pages → Build and deployment**, source **GitHub Actions**.
+After that, every push redeploys, and the workflow can also be triggered by hand from the
+**Actions** tab.
 
-`.nojekyll` is committed so that GitHub Pages copies `site-lib/` verbatim instead of running the
-files through Jekyll.
+The site is live at
+<https://alphaprivativa.github.io/Group-Cohomology-Bachelor-Thesis/>, where the root
+`index.html` sends visitors into the web edition.
+
+`.nojekyll` is committed so that `site-lib/` is copied verbatim rather than run through Jekyll.
 
 ## Citation
 
@@ -152,7 +156,7 @@ files through Jekyll.
   institution = {Alma Mater Studiorum, Universit\`a di Bologna},
   year        = {2024},
   language    = {italian},
-  url         = {https://alphaprivativa.github.io/group-cohomology-thesis/}
+  url         = {https://alphaprivativa.github.io/Group-Cohomology-Bachelor-Thesis/}
 }
 ```
 
