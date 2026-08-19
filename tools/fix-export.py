@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Mark links that point outside the export as unresolved.
+"""Post-export fixes for the Obsidian web export.
+
+1. Mark links that point outside the export as unresolved.
 
 The web edition is exported from an Obsidian vault that is much larger than the
 thesis. Notes in the thesis link out to notes that were not exported, so the
@@ -15,7 +17,10 @@ sees which notion is being referenced.
 Anchors whose target exists are left untouched, so the script is idempotent and
 safe to re-run after every export:
 
-    python tools/mark-unresolved-links.py main_HTML_ENG
+2. Strip the "./" the exporter prepends to absolute URLs it builds from the
+   configured Site URL, which turns them into broken relative paths.
+
+    python tools/fix-export.py main_HTML_ENG
 """
 
 import re
@@ -42,6 +47,24 @@ def rewrite(tag: str, root: Path) -> str:
         return tag
     tag = DROP.sub("", tag)
     return tag.replace('class="internal-link"', 'class="internal-link is-unresolved"')
+
+
+def strip_dot_slash(root: Path) -> int:
+    """Undo the exporter's "./https://..." mangling of absolute URLs.
+
+    With a Site URL configured, the plugin still prefixes "./" to the absolute
+    URLs it emits, so og:url, og:image, the RSS <link rel="alternate"> and the
+    feed's own entries all become relative paths that resolve to nothing.
+    """
+    fixed = 0
+    for pattern in ("*.html", "*.xml", "*.json"):
+        for f in sorted(root.rglob(pattern)):
+            source = f.read_text(encoding="utf-8")
+            result = source.replace("./https://", "https://").replace("./http://", "http://")
+            if result != source:
+                f.write_text(result, encoding="utf-8", newline="")
+                fixed += 1
+    return fixed
 
 
 def main(argv: list[str]) -> int:
@@ -71,6 +94,7 @@ def main(argv: list[str]) -> int:
             print(f"  {count:3d}  {page.name}")
 
     print(f"marked {changed_links} unresolved link(s) in {changed_files} file(s)")
+    print(f'stripped "./" from absolute URLs in {strip_dot_slash(root)} file(s)')
     return 0
 
 

@@ -99,7 +99,7 @@ own; if the two editions ever disagree, the PDF is authoritative.
 │   └── zz-allegati/quiver/    Commutative diagrams as SVG
 ├── .github/workflows/static.yml   Deploys the site to GitHub Pages on push
 ├── tools/
-│   └── mark-unresolved-links.py   Post-export tidy up, see below
+│   └── fix-export.py               Post-export fixes, see below
 ├── LICENSE                    CC BY 4.0
 └── .nojekyll                  Tells GitHub Pages to serve the files as they are
 ```
@@ -111,12 +111,17 @@ notes that are not part of the thesis and therefore are not exported. Left alone
 anchors are ordinary links that return 404. After every export, run
 
 ```bash
-python tools/mark-unresolved-links.py main_HTML_ENG
+python tools/fix-export.py main_HTML_ENG
 ```
 
-which rewrites exactly those anchors into Obsidian's own *unresolved link* form: the text
+It marks unresolved links, rewriting exactly those anchors into Obsidian's own *unresolved link* form: the text
 and the tooltip stay, but the link is inert and rendered dimmed by the theme. Links whose
 target does exist are left untouched, so the script is safe to re-run.
+
+It also strips the `./` that the exporter prepends to the absolute URLs it builds from the
+configured Site URL, which would otherwise leave `og:url`, `og:image`, the RSS feed and the
+`fullURL` entries in `site-lib/metadata.json` pointing at `./https://...`, a relative path
+that resolves to nothing.
 
 ## Reading it locally
 
