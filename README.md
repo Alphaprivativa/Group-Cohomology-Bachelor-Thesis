@@ -97,9 +97,25 @@ own; if the two editions ever disagree, the PDF is authoritative.
 │   ├── <one file per definition, theorem or proof>
 │   ├── site-lib/              Styles, scripts, fonts, search index, graph engine
 │   └── zz-allegati/quiver/    Commutative diagrams as SVG
+├── tools/
+│   └── mark-unresolved-links.py   Post-export tidy up, see below
 ├── LICENSE                    CC BY 4.0
 └── .nojekyll                  Tells GitHub Pages to serve the files as they are
 ```
+
+### Re-exporting
+
+The thesis notes live inside a much larger Obsidian vault, and they link out to
+notes that are not part of the thesis and therefore are not exported. Left alone, those
+anchors are ordinary links that return 404. After every export, run
+
+```bash
+python tools/mark-unresolved-links.py main_HTML_ENG
+```
+
+which rewrites exactly those anchors into Obsidian's own *unresolved link* form: the text
+and the tooltip stay, but the link is inert and rendered dimmed by the theme. Links whose
+target does exist are left untouched, so the script is safe to re-run.
 
 ## Reading it locally
 
